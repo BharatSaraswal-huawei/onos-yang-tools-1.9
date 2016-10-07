@@ -157,6 +157,7 @@ import static org.onosproject.yangutils.utils.UtilConstants.PRIVATE;
 import static org.onosproject.yangutils.utils.UtilConstants.PROCESS_SUBTREE_FILTERING;
 import static org.onosproject.yangutils.utils.UtilConstants.PROTECTED;
 import static org.onosproject.yangutils.utils.UtilConstants.PUBLIC;
+import static org.onosproject.yangutils.utils.UtilConstants.QUESTION_MARK;
 import static org.onosproject.yangutils.utils.UtilConstants.QUOTES;
 import static org.onosproject.yangutils.utils.UtilConstants.RETURN;
 import static org.onosproject.yangutils.utils.UtilConstants.RPC_INPUT_VAR_NAME;
@@ -1727,10 +1728,16 @@ public final class MethodsGenerator {
             case ENUMERATION:
                 return name + PERIOD + SCHEMA_NAME +
                         OPEN_CLOSE_BRACKET_STRING;
-            case LEAFREF:
-            case IDENTITYREF:
-            case INSTANCE_IDENTIFIER:
+            case BOOLEAN:
             case EMPTY:
+                return name + SPACE + QUESTION_MARK + SPACE + getQuotedString(TRUE)
+                        + SPACE + COLON + SPACE + getQuotedString(FALSE);
+            case LEAFREF:
+                //TODO:
+            case IDENTITYREF:
+                //TODO:
+            case INSTANCE_IDENTIFIER:
+                //TODO:
                 return name;
             case UINT64:
             case DECIMAL64:
