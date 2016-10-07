@@ -437,7 +437,7 @@ public final class JavaCodeSnippetGen {
                 "     * Applicable in protocol edit operation, not applicable" +
                 " in query operation\n" +
                 "     */\n" +
-                "    public static enum OpType {\n" +
+                "    public static enum OnosYangOpType {\n" +
                 "        MERGE,\n" +
                 "        REPLACE,\n" +
                 "        CREATE,\n" +

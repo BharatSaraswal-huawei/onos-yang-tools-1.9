@@ -1732,7 +1732,7 @@ public final class UtilConstants {
      * Static attribute for YANG node operation type class.
      */
     public static final String OPERATION_TYPE_CLASS =
-            "OpType";
+            "OnosYangOpType";
 
     /**
      * Static attribute for YANG node operation type attribute.
