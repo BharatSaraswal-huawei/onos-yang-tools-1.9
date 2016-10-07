@@ -144,6 +144,7 @@ import static org.onosproject.yangutils.utils.UtilConstants.OBJ;
 import static org.onosproject.yangutils.utils.UtilConstants.OBJECT;
 import static org.onosproject.yangutils.utils.UtilConstants.OBJECT_STRING;
 import static org.onosproject.yangutils.utils.UtilConstants.OF;
+import static org.onosproject.yangutils.utils.UtilConstants.OF_CAPS;
 import static org.onosproject.yangutils.utils.UtilConstants.ONE;
 import static org.onosproject.yangutils.utils.UtilConstants.OPEN_CLOSE_BRACKET_STRING;
 import static org.onosproject.yangutils.utils.UtilConstants.OPEN_CURLY_BRACKET;
@@ -1679,30 +1680,91 @@ public final class MethodsGenerator {
         return sBuild.toString();
     }
 
+
+    /**
+     * Returns to string method for typedef.
+     *
+     * @param attr      attribute name
+     * @param className class name
+     * @return to string method for typedef
+     */
+    public static String getToStringForType(String attr, YangType type,
+                                            String className) {
+        StringBuilder builder = new StringBuilder(getOverRideString())
+                .append(methodSignature(TO_STRING_METHOD, null, PUBLIC, null,
+                                        STRING_DATA_TYPE, null, CLASS_TYPE));
+        builder.append(getReturnString(
+                getToStringForSpecialType(className, type, attr), EIGHT_SPACE_INDENTATION))
+                .append(signatureClose()).append(methodClose(FOUR_SPACE));
+        return builder.toString();
+    }
+
+    /**
+     * Returns to string method body for type class.
+     *
+     * @param className class name
+     * @param type      type of attribute
+     * @param name      @return to string method body for typedef class
+     */
+    private static String getToStringForSpecialType(String className, YangType type, String name) {
+        switch (type.getDataType()) {
+            case INT8:
+            case INT16:
+            case INT32:
+            case INT64:
+            case UINT8:
+            case UINT16:
+            case UINT32:
+                return STRING_DATA_TYPE + PERIOD + VALUE + OF_CAPS + brackets(
+                        OPEN_CLOSE_BRACKET_WITH_VALUE, name, null);
+            case BINARY:
+                return geStringConverterForBinary(name) +
+                        PERIOD + TO_STRING_METHOD + OPEN_CLOSE_BRACKET_STRING;
+            case BITS:
+                return className + getCapitalCase(name) + PERIOD +
+                        TO_STRING_METHOD + brackets(
+                        OPEN_CLOSE_BRACKET_WITH_VALUE, name, null);
+            case ENUMERATION:
+                return name + PERIOD + SCHEMA_NAME +
+                        OPEN_CLOSE_BRACKET_STRING;
+            case LEAFREF:
+            case IDENTITYREF:
+            case INSTANCE_IDENTIFIER:
+            case EMPTY:
+                return name;
+            case UINT64:
+            case DECIMAL64:
+            case DERIVED:
+            case UNION:
+                return name + PERIOD +
+                        TO_STRING_METHOD + OPEN_CLOSE_BRACKET_STRING;
+            default:
+                return name;
+        }
+    }
+
     /**
      * Returns union class's to string method.
      *
      * @param types list of types
+     * @param name  class name
      * @return union class's to string method
      */
-    static String getUnionToStringMethod(List<YangType<?>> types) {
+    static String getUnionToStringMethod(List<YangType<?>> types, String name) {
 
         StringBuilder builder = new StringBuilder(getOverRideString());
         builder.append(methodSignature(TO_STRING_METHOD, null, PUBLIC, null,
-                                       STRING_DATA_TYPE, null, CLASS_TYPE))
-                .append(getMoreObjectAttr());
+                                       STRING_DATA_TYPE, null, CLASS_TYPE));
         for (YangType type : types) {
             builder.append(getIfConditionBegin(
                     EIGHT_SPACE_INDENTATION, getSetValueParaCondition(
-                            types.indexOf(type))))
-                    .append(TWELVE_SPACE_INDENTATION).append(HELPER).append(
-                    methodBody(TO_STRING, getCamelCase(type.getDataTypeName()
-                            , null), null, EMPTY_STRING, null, null, false, null))
+                            types.indexOf(type)))).append(getReturnString(
+                    getToStringForSpecialType(name, type,
+                                              getCamelCase(type.getDataTypeName(), null)),
+                    TWELVE_SPACE_INDENTATION))
                     .append(signatureClose()).append(methodClose(EIGHT_SPACE));
         }
-        builder.append(getReturnString(HELPER, EIGHT_SPACE_INDENTATION))
-                .append(PERIOD).append(TO_STRING_METHOD)
-                .append(OPEN_CLOSE_BRACKET_STRING).append(signatureClose())
+        builder.append(getReturnString(NULL, EIGHT_SPACE_INDENTATION)).append(signatureClose())
                 .append(methodClose(FOUR_SPACE));
         return builder.toString();
     }
@@ -1722,9 +1784,10 @@ public final class MethodsGenerator {
                                              YangEnumeration enumeration) {
 
         StringBuilder builder = new StringBuilder();
-        builder.append(methodSignature(TO_STRING_METHOD, null, PUBLIC, BITS,
+        builder.append(methodSignature(TO_STRING_METHOD, null,
+                                       PUBLIC + SPACE + STATIC, BITS,
                                        STRING_DATA_TYPE, BIT_SET, CLASS_TYPE))
-                .append(getMoreObjectAttr());
+                .append(getMoreObjectAttr(className));
         String condition;
         String name;
         for (YangEnum yangEnum : enumeration.getEnumSet()) {

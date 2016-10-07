@@ -76,7 +76,7 @@ import static org.onosproject.yangutils.utils.UtilConstants.FOR;
 import static org.onosproject.yangutils.utils.UtilConstants.FOUR_SPACE_INDENTATION;
 import static org.onosproject.yangutils.utils.UtilConstants.FROM_STRING_METHOD_NAME;
 import static org.onosproject.yangutils.utils.UtilConstants.GET;
-import static org.onosproject.yangutils.utils.UtilConstants.GOOGLE_MORE_OBJECT_METHOD_STRING;
+import static org.onosproject.yangutils.utils.UtilConstants.GOOGLE_MORE_OBJECT_METHOD_STATIC_STRING;
 import static org.onosproject.yangutils.utils.UtilConstants.IF;
 import static org.onosproject.yangutils.utils.UtilConstants.IMPLEMENTS;
 import static org.onosproject.yangutils.utils.UtilConstants.IMPORT;
@@ -1180,12 +1180,15 @@ public final class StringGenerator {
     /**
      * Returns more object attr for union to string method.
      *
+     * @param name name of generate class
      * @return more object attr for union to string method
      */
-    static String getMoreObjectAttr() {
+    static String getMoreObjectAttr(String name) {
+        String cls = name + PERIOD + CLASS;
         StringBuilder attr = new StringBuilder(EIGHT_SPACE_INDENTATION);
         String[] array = {NEW_LINE};
-        attr.append(MORE_OBJ_ATTR).append(GOOGLE_MORE_OBJECT_METHOD_STRING)
+        attr.append(MORE_OBJ_ATTR).append(GOOGLE_MORE_OBJECT_METHOD_STATIC_STRING)
+                .append(brackets(OPEN_CLOSE_BRACKET_WITH_VALUE, cls, null))
                 .append(NEW_LINE).append(FOUR_SPACE_INDENTATION).append(trimAtLast(
                 getOmitNullValueString(), array)).append(signatureClose());
         return attr.toString();

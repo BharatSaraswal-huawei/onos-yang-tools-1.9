@@ -261,6 +261,11 @@ public class TempJavaFragmentFiles {
     private static final String BUILDER_CLASS_FILE_NAME_SUFFIX = BUILDER;
 
     /**
+     *
+     */
+    private boolean isBinary;
+
+    /**
      * Information about the java files being generated.
      */
     private JavaFileInfoTranslator javaFileInfo;
@@ -760,8 +765,10 @@ public class TempJavaFragmentFiles {
         String containedInCls = getCapitalCase(tempFiles.getJavaFileInfo()
                                                        .getJavaName());
         String containedInPkg = tempFiles.getJavaFileInfo().getPackage();
-        JavaQualifiedTypeInfoTranslator info = new JavaQualifiedTypeInfoTranslator();
-        if (container.getDataType().getDataType() == YangDataTypes.BITS) {
+        JavaQualifiedTypeInfoTranslator info;
+        if (container.getDataType().getDataType() == YangDataTypes.BINARY) {
+            tempFiles.setBinary(true);
+        } else if (container.getDataType().getDataType() == YangDataTypes.BITS) {
             //Add bitset import for type and leaf value flags.
             info = new JavaQualifiedTypeInfoTranslator();
             info.setClassInfo(BIT_SET);
@@ -1947,6 +1954,24 @@ public class TempJavaFragmentFiles {
      */
     public List<BitsJavaInfoHandler> getBitsHandler() {
         return bitsHandler;
+    }
+
+    /**
+     * Sets true if binary type is there for leaf/leaf-list.
+     *
+     * @param binary true if binary type is there for leaf/leaf-list
+     */
+    public void setBinary(boolean binary) {
+        isBinary = binary;
+    }
+
+    /**
+     * Returns true if binary type is there for leaf/leaf-list.
+     *
+     * @return true if binary type is there for leaf/leaf-list
+     */
+    public boolean isBinary() {
+        return isBinary;
     }
 
 }

@@ -731,6 +731,10 @@ public final class UtilConstants {
      * Static attribute for of.
      */
     public static final String OF = "of";
+    /**
+     * Static attribute for of.
+     */
+    public static final String OF_CAPS = "Of";
 
     /**
      * Static attribute for other.
@@ -1450,6 +1454,12 @@ public final class UtilConstants {
      */
     public static final String GOOGLE_MORE_OBJECT_METHOD_STRING =
             "MoreObjects.toStringHelper(getClass())";
+
+    /**
+     * Static attribute for to string method.
+     */
+    public static final String GOOGLE_MORE_OBJECT_METHOD_STATIC_STRING =
+            "MoreObjects.toStringHelper";
 
     /**
      * Static attribute for java utilities import package.

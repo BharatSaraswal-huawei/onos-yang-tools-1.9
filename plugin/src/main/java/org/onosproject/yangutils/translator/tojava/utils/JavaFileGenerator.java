@@ -120,6 +120,7 @@ import static org.onosproject.yangutils.translator.tojava.utils.MethodsGenerator
 import static org.onosproject.yangutils.translator.tojava.utils.MethodsGenerator.getRangeValidatorMethodForUnion;
 import static org.onosproject.yangutils.translator.tojava.utils.MethodsGenerator.getSetterForSelectLeaf;
 import static org.onosproject.yangutils.translator.tojava.utils.MethodsGenerator.getSetterString;
+import static org.onosproject.yangutils.translator.tojava.utils.MethodsGenerator.getToStringForType;
 import static org.onosproject.yangutils.translator.tojava.utils.MethodsGenerator.getToStringMethodClose;
 import static org.onosproject.yangutils.translator.tojava.utils.MethodsGenerator.getToStringMethodOpen;
 import static org.onosproject.yangutils.translator.tojava.utils.MethodsGenerator.getUnionToStringMethod;
@@ -177,6 +178,7 @@ import static org.onosproject.yangutils.utils.UtilConstants.TYPEDEF_CLASS;
 import static org.onosproject.yangutils.utils.UtilConstants.UNION_CLASS;
 import static org.onosproject.yangutils.utils.io.impl.JavaDocGen.JavaDocType.GETTER_METHOD;
 import static org.onosproject.yangutils.utils.io.impl.JavaDocGen.getJavaDoc;
+import static org.onosproject.yangutils.utils.io.impl.YangIoUtils.getCamelCase;
 import static org.onosproject.yangutils.utils.io.impl.YangIoUtils.getCapitalCase;
 import static org.onosproject.yangutils.utils.io.impl.YangIoUtils.insertDataIntoJavaFile;
 import static org.onosproject.yangutils.utils.io.impl.YangIoUtils.replaceLast;
@@ -787,10 +789,13 @@ public final class JavaFileGenerator {
                                            List<String> methods, String path)
             throws IOException {
         //To string method.
-        methods.add(getToStringMethodOpen() +
-                            getDataFromTempFileHandle(
-                                    TO_STRING_IMPL_MASK, getTypeFiles(curNode), path) +
-                            getToStringMethodClose());
+
+        List<YangType<?>> types = ((YangTypeDef) curNode).getTypeList();
+        YangType type = types.get(0);
+        String className = ((JavaFileInfoContainer) curNode).getJavaFileInfo()
+                .getJavaName();
+        methods.add(getToStringForType(getCamelCase(type.getDataTypeName(),
+                                                    null), type, getCapitalCase(className)));
         for (BitsJavaInfoHandler handler : getTypeFiles(curNode)
                 .getBitsHandler()) {
             generateBitsFile(handler.getAttr(), handler.getYangType(), curNode);
@@ -905,7 +910,7 @@ public final class JavaFileGenerator {
 
             //To string method.
             methods.add(getUnionToStringMethod(
-                    ((YangUnion) curNode).getTypeList()));
+                    ((YangUnion) curNode).getTypeList(), getCapitalCase(className)));
 
             for (BitsJavaInfoHandler handler : getTypeFiles(curNode)
                     .getBitsHandler()) {
