@@ -115,6 +115,7 @@ public class YangSchemaNodeIdentifier extends DefaultLocationInfo
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, namespace);
+
+        return 0;
     }
 }

@@ -110,6 +110,7 @@ import static org.onosproject.yangutils.utils.UtilConstants.DEFAULT_CAPS;
 import static org.onosproject.yangutils.utils.UtilConstants.EIGHT_SPACE_INDENTATION;
 import static org.onosproject.yangutils.utils.UtilConstants.ELSE;
 import static org.onosproject.yangutils.utils.UtilConstants.EMPTY_STRING;
+import static org.onosproject.yangutils.utils.UtilConstants.ENCODE_TO_STRING;
 import static org.onosproject.yangutils.utils.UtilConstants.ENUM;
 import static org.onosproject.yangutils.utils.UtilConstants.EQUAL;
 import static org.onosproject.yangutils.utils.UtilConstants.EQUALS_STRING;
@@ -121,6 +122,7 @@ import static org.onosproject.yangutils.utils.UtilConstants.FROM_STRING_METHOD_N
 import static org.onosproject.yangutils.utils.UtilConstants.FROM_STRING_PARAM_NAME;
 import static org.onosproject.yangutils.utils.UtilConstants.GET;
 import static org.onosproject.yangutils.utils.UtilConstants.GET_DECODER;
+import static org.onosproject.yangutils.utils.UtilConstants.GET_ENCODER;
 import static org.onosproject.yangutils.utils.UtilConstants.GET_METHOD_PREFIX;
 import static org.onosproject.yangutils.utils.UtilConstants.GOOGLE_MORE_OBJECT_METHOD_STRING;
 import static org.onosproject.yangutils.utils.UtilConstants.HASH;
@@ -841,7 +843,7 @@ public final class MethodsGenerator {
     }
 
     /**
-     * Returns to string converter for binary type.
+     * Returns from string converter for binary type.
      *
      * @param var variable name
      * @return to string method body
@@ -852,6 +854,21 @@ public final class MethodsGenerator {
                 .append(GET_DECODER).append(OPEN_CLOSE_BRACKET_STRING).append(PERIOD)
                 .append(DECODE).append(brackets(OPEN_CLOSE_BRACKET_WITH_VALUE,
                                                 var, null)).toString();
+    }
+
+    /**
+     * Returns to string converter for binary type.
+     *
+     * @param var variable name
+     * @return to string method body
+     */
+    private static String getToStringForBinary(String var) {
+        StringBuilder builder = new StringBuilder();
+        return builder.append(BASE64).append(PERIOD)
+                .append(GET_ENCODER).append(OPEN_CLOSE_BRACKET_STRING)
+                .append(PERIOD).append(ENCODE_TO_STRING)
+                .append(brackets(OPEN_CLOSE_BRACKET_WITH_VALUE, var, null))
+                .toString();
     }
 
     /**
@@ -1719,8 +1736,8 @@ public final class MethodsGenerator {
                 return STRING_DATA_TYPE + PERIOD + VALUE + OF_CAPS + brackets(
                         OPEN_CLOSE_BRACKET_WITH_VALUE, name, null);
             case BINARY:
-                return geStringConverterForBinary(name) +
-                        PERIOD + TO_STRING_METHOD + OPEN_CLOSE_BRACKET_STRING;
+                return getToStringForBinary(name) + PERIOD +
+                        TO_STRING_METHOD + OPEN_CLOSE_BRACKET_STRING;
             case BITS:
                 return className + getCapitalCase(name) + PERIOD +
                         TO_STRING_METHOD + brackets(
