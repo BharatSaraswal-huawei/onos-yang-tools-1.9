@@ -20,6 +20,7 @@ import org.onosproject.yangutils.datamodel.LeafRefInvalidHolder;
 import org.onosproject.yangutils.datamodel.RpcNotificationContainer;
 import org.onosproject.yangutils.datamodel.YangAtomicPath;
 import org.onosproject.yangutils.datamodel.YangAugment;
+import org.onosproject.yangutils.datamodel.YangGrouping;
 import org.onosproject.yangutils.datamodel.YangImport;
 import org.onosproject.yangutils.datamodel.YangInclude;
 import org.onosproject.yangutils.datamodel.YangInput;
@@ -30,6 +31,7 @@ import org.onosproject.yangutils.datamodel.YangLeavesHolder;
 import org.onosproject.yangutils.datamodel.YangModule;
 import org.onosproject.yangutils.datamodel.YangNode;
 import org.onosproject.yangutils.datamodel.YangNodeIdentifier;
+import org.onosproject.yangutils.datamodel.YangNotification;
 import org.onosproject.yangutils.datamodel.YangOutput;
 import org.onosproject.yangutils.datamodel.YangSubModule;
 import org.onosproject.yangutils.datamodel.YangUses;
@@ -48,7 +50,9 @@ import static org.onosproject.yangutils.linker.impl.PrefixResolverType.INTER_TO_
 import static org.onosproject.yangutils.linker.impl.PrefixResolverType.INTRA_TO_INTER;
 import static org.onosproject.yangutils.linker.impl.PrefixResolverType.NO_PREFIX_CHANGE_FOR_INTER;
 import static org.onosproject.yangutils.linker.impl.PrefixResolverType.NO_PREFIX_CHANGE_FOR_INTRA;
+import static org.onosproject.yangutils.linker.impl.XpathLinkingTypes.AUGMENT_LINKING;
 import static org.onosproject.yangutils.utils.UtilConstants.COLON;
+import static org.onosproject.yangutils.utils.UtilConstants.ERROR_MSG_FOR_AUGMENT_LINKING;
 import static org.onosproject.yangutils.utils.UtilConstants.FAILED_TO_FIND_LEAD_INFO_HOLDER;
 import static org.onosproject.yangutils.utils.UtilConstants.INPUT;
 import static org.onosproject.yangutils.utils.UtilConstants.IS_INVALID;
@@ -69,6 +73,7 @@ public class YangXpathLinker<T> {
     private Map<YangAtomicPath, PrefixResolverType> prefixResolverTypes;
     private String curPrefix;
     private String constructsParentsPrefix;
+    private XpathLinkingTypes linkingType;
 
     /**
      * Creates an instance of x-path linker.
@@ -101,14 +106,16 @@ public class YangXpathLinker<T> {
      * @param atomicPaths atomic path node list
      * @param root        root node
      * @param leafref     instance of YANG leafref
+     * @param curLinking  x path linking type
      * @return linked target node
      */
     T processLeafRefXpathLinking(List<YangAtomicPath> atomicPaths, YangNode root,
-                                 YangLeafRef leafref) {
+                                 YangLeafRef leafref, XpathLinkingTypes curLinking) {
 
         YangNode targetNode;
         rootNode = root;
         prefixResolverTypes = new HashMap<>();
+        linkingType = curLinking;
         parsePrefixResolverList(atomicPaths);
         YangAtomicPath leafRefPath = atomicPaths.get(atomicPaths.size() - 1);
 
@@ -191,15 +198,17 @@ public class YangXpathLinker<T> {
     /**
      * Process absolute node path linking for augment.
      *
-     * @param paths absolute path node list
-     * @param root  root node
+     * @param paths      absolute path node list
+     * @param root       root node
+     * @param curLinking x path linker type
      * @return linked target node
      */
-    public YangNode processAugmentXpathLinking(List<YangAtomicPath> paths,
-                                               YangNode root) {
+    public YangNode processXpathLinking(List<YangAtomicPath> paths,
+                                        YangNode root, XpathLinkingTypes curLinking) {
         absPaths = paths;
         rootNode = root;
         prefixResolverTypes = new HashMap<>();
+        linkingType = curLinking;
         parsePrefixResolverList(paths);
         YangNode targetNode = parseData(root);
         if (targetNode == null) {
@@ -237,8 +246,8 @@ public class YangXpathLinker<T> {
     /**
      * Searches for the referred leaf-list in target node.
      *
-     * @param targetNode   target node
-     * @param name leaf-list name
+     * @param targetNode target node
+     * @param name       leaf-list name
      * @return target leaf-list
      */
     private YangLeafList searchReferredLeafList(YangNode targetNode, String name) {
@@ -317,6 +326,7 @@ public class YangXpathLinker<T> {
 
             if (tempNode != null) {
                 tempPath.setResolvedNode(tempNode);
+                validateTempPathNode(tempNode);
             }
 
             if (index == absPaths.size() - 1) {
@@ -326,6 +336,32 @@ public class YangXpathLinker<T> {
             index++;
         } while (validate(tempNode, index));
         return tempNode;
+    }
+
+    /**
+     * Validates temp path nodes for augment linking.
+     *
+     * @param node temp path node
+     */
+    private void validateTempPathNode(YangNode node) {
+
+        if (linkingType != AUGMENT_LINKING) {
+            return;
+        }
+        if (node instanceof YangGrouping) {
+            LinkerException ex = new LinkerException(
+                    ERROR_MSG_FOR_AUGMENT_LINKING +
+                            getAugmentNodeIdentifier(
+                                    absPaths.get(absPaths.size() - 1).getNodeIdentifier(),
+                                    absPaths,
+                                    rootNode));
+            ex.setFileName(rootNode.getFileName());
+            throw ex;
+
+        }
+        if (node instanceof YangNotification) {
+
+        }
     }
 
     /**
@@ -739,5 +775,4 @@ public class YangXpathLinker<T> {
                             YangNode rootNode) {
         ((RpcNotificationContainer) rootNode).addToAugmentList(augment);
     }
-
 }

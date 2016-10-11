@@ -948,6 +948,16 @@ public final class UtilConstants {
     public static final String VALUE_LEAF_SET = "isLeafValueSet";
 
     /**
+     * Static attribute for is valueLeafFlags method prefix.
+     */
+    public static final String VALUE_LEAF = "valueLeafFlags";
+
+    /**
+     * Static attribute for is selectLeafFlags method prefix.
+     */
+    public static final String SELECT_LEAF = "selectLeafFlags";
+
+    /**
      * Static attribute for is isSelectLeaf method prefix.
      */
     public static final String IS_SELECT_LEAF = "isSelectLeaf";
@@ -1122,6 +1132,11 @@ public final class UtilConstants {
      * BitSet built in java type.
      */
     public static final String BIT_SET = "BitSet";
+
+    /**
+     * Augment map type.
+     */
+    public static final String AUGMENT_MAP_TYPE = "Map<Class<?>, Object>";
 
     /**
      * Byte java built in type.
@@ -1503,6 +1518,12 @@ public final class UtilConstants {
             "yangAugmentedInfo";
 
     /**
+     * Static attribute for AugmentedInfo class.
+     */
+    public static final String YANG_AUGMENTED_INFO_MAP =
+            "yangAugmentedInfoMap";
+
+    /**
      * Static attribute for augmented.
      */
     public static final String AUGMENTED = "Augmented";
@@ -1833,6 +1854,14 @@ public final class UtilConstants {
      */
     public static final String ERROR_MSG_JAVA_IDENTITY = "Expected java " +
             "identity instance node ";
+
+    /**
+     * Static attribute for error msg.
+     */
+    public static final String ERROR_MSG_FOR_AUGMENT_LINKING = "Augment " +
+            "linking does not support linking when path contains " +
+            "notification/grouping for path: ";
+
     /**
      * Static attribute for in.
      */

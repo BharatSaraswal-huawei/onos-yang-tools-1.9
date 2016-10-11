@@ -240,6 +240,11 @@ public final class YangJavaModelUtils {
             }
         }
         if (info instanceof YangLeavesHolder) {
+            YangLeavesHolder holder = (YangLeavesHolder) info;
+            boolean isLeafPresent = holder.getListOfLeaf() != null && !holder
+                    .getListOfLeaf().isEmpty();
+            boolean isLeafListPresent = holder.getListOfLeafList() != null &&
+                    !holder.getListOfLeafList().isEmpty();
             /*
              * Container
              * Case
@@ -249,12 +254,23 @@ public final class YangJavaModelUtils {
              * Notification
              * Output
              */
-            getBeanFiles(info).addCurNodeLeavesInfoToTempFiles((YangNode) info,
+            if (isLeafPresent || isLeafListPresent) {
+                getBeanFiles(info).addCurNodeLeavesInfoToTempFiles((YangNode) info,
+                                                                   config);
+            }
+            //Add value leaf flag attribute to temp file.
+            if (isLeafPresent) {
+                getBeanFiles(info).addValueLeafFlag(config, (YangNode) info);
+            }
+            if (((YangNode) info).isOpTypeReq()) {
+                // Add operation type as an attribute.
+                getBeanFiles(info).addOperationTypeToTempFiles((YangNode) info,
                                                                config);
-
-            // Add operation type as an attribute.
-            getBeanFiles(info).addOperationTypeToTempFiles((YangNode) info,
-                                                           config);
+                if (isLeafPresent) {
+                    //Add select leaf flag attribute to temp file.
+                    getBeanFiles(info).addSelectLeafFlag(config);
+                }
+            }
         } else if (info instanceof YangTypeHolder) {
             /*
              * Typedef
@@ -423,7 +439,9 @@ public final class YangJavaModelUtils {
         generateCodeOfNode(info, config);
         TempJavaCodeFragmentFiles tempFiles =
                 info.getTempJavaCodeFragmentFiles();
-
+        if (!(info instanceof YangChoice)) {
+            getBeanFiles(info).addYangAugmentedMap(config);
+        }
         if (info instanceof YangCase) {
             YangNode parent = ((YangCase) info).getParent();
             JavaQualifiedTypeInfoTranslator typeInfo =

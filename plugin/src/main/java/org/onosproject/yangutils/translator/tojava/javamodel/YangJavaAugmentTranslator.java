@@ -15,8 +15,6 @@
  */
 package org.onosproject.yangutils.translator.tojava.javamodel;
 
-import java.io.IOException;
-
 import org.onosproject.yangutils.datamodel.YangChoice;
 import org.onosproject.yangutils.datamodel.javadatamodel.YangJavaAugment;
 import org.onosproject.yangutils.translator.exception.TranslatorException;
@@ -26,8 +24,10 @@ import org.onosproject.yangutils.translator.tojava.JavaFileInfoTranslator;
 import org.onosproject.yangutils.translator.tojava.TempJavaCodeFragmentFiles;
 import org.onosproject.yangutils.utils.io.YangPluginConfig;
 
+import java.io.IOException;
+
 import static org.onosproject.yangutils.translator.tojava.GeneratedJavaFileType.GENERATE_INTERFACE_WITH_BUILDER;
-import static org.onosproject.yangutils.translator.tojava.YangJavaModelUtils.generateCodeOfAugmentableNode;
+import static org.onosproject.yangutils.translator.tojava.YangJavaModelUtils.generateCodeOfNode;
 
 /**
  * Represents augment information extended to support java code generation.
@@ -62,10 +62,10 @@ public class YangJavaAugmentTranslator
 
         if (javaFileInfo == null) {
             throw new TranslatorException("Missing java info in java datamodel node " +
-                    getName() + " in " +
-                    getLineNumber() + " at " +
-                    getCharPosition()
-                    + " in " + getFileName());
+                                                  getName() + " in " +
+                                                  getLineNumber() + " at " +
+                                                  getCharPosition()
+                                                  + " in " + getFileName());
         }
         return (JavaFileInfoTranslator) javaFileInfo;
     }
@@ -109,13 +109,13 @@ public class YangJavaAugmentTranslator
     @Override
     public void generateCodeEntry(YangPluginConfig yangPlugin) throws TranslatorException {
         try {
-            generateCodeOfAugmentableNode(this, yangPlugin);
+            generateCodeOfNode(this, yangPlugin);
         } catch (IOException e) {
             throw new TranslatorException("Failed to generate code for augmentable node " +
-                    getName() + " in " +
-                    getLineNumber() + " at " +
-                    getCharPosition()
-                    + " in " + getFileName() + " " + e.getLocalizedMessage());
+                                                  getName() + " in " +
+                                                  getLineNumber() + " at " +
+                                                  getCharPosition()
+                                                  + " in " + getFileName() + " " + e.getLocalizedMessage());
         }
     }
 
@@ -132,10 +132,10 @@ public class YangJavaAugmentTranslator
             }
         } catch (IOException e) {
             throw new TranslatorException("Failed to generate code for augmentable node " +
-                    getName() + " in " +
-                    getLineNumber() + " at " +
-                    getCharPosition()
-                    + " in " + getFileName() + " " + e.getLocalizedMessage());
+                                                  getName() + " in " +
+                                                  getLineNumber() + " at " +
+                                                  getCharPosition()
+                                                  + " in " + getFileName() + " " + e.getLocalizedMessage());
         }
     }
 

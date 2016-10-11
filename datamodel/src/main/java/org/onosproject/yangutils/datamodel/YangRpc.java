@@ -16,13 +16,13 @@
 
 package org.onosproject.yangutils.datamodel;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.onosproject.yangutils.datamodel.exceptions.DataModelException;
 import org.onosproject.yangutils.datamodel.utils.Parsable;
 import org.onosproject.yangutils.datamodel.utils.YangConstructType;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.onosproject.yangutils.datamodel.utils.DataModelUtils.detectCollidingChildUtil;
 
@@ -63,7 +63,7 @@ import static org.onosproject.yangutils.datamodel.utils.DataModelUtils.detectCol
 public abstract class YangRpc
         extends YangNode
         implements YangCommonInfo, Parsable,
-                   CollisionDetector, YangIfFeatureHolder {
+        CollisionDetector, YangIfFeatureHolder, InvalidOpTypeHolder {
 
     private static final long serialVersionUID = 806201613L;
 

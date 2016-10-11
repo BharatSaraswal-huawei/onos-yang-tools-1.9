@@ -30,8 +30,7 @@ import static org.onosproject.yangutils.datamodel.utils.GeneratedLanguage.JAVA_G
 import static org.onosproject.yangutils.datamodel.utils.YangConstructType.MODULE_DATA;
 import static org.onosproject.yangutils.parser.impl.parserutils.ListenerErrorLocation.ENTRY;
 import static org.onosproject.yangutils.parser.impl.parserutils.ListenerErrorLocation.EXIT;
-import static org.onosproject.yangutils.parser.impl.parserutils.ListenerErrorMessageConstruction
-        .constructListenerErrorMessage;
+import static org.onosproject.yangutils.parser.impl.parserutils.ListenerErrorMessageConstruction.constructListenerErrorMessage;
 import static org.onosproject.yangutils.parser.impl.parserutils.ListenerErrorType.INVALID_CHILD;
 import static org.onosproject.yangutils.parser.impl.parserutils.ListenerErrorType.INVALID_HOLDER;
 import static org.onosproject.yangutils.parser.impl.parserutils.ListenerErrorType.MISSING_CURRENT_HOLDER;
@@ -90,7 +89,6 @@ public final class ModuleListener {
         yangModule.setLineNumber(ctx.getStart().getLine());
         yangModule.setCharPosition(ctx.getStart().getCharPositionInLine());
         yangModule.setFileName(listener.getFileName());
-
         if (ctx.moduleBody().moduleHeaderStatement().yangVersionStatement() == null) {
             yangModule.setVersion((byte) 1);
         }

@@ -79,7 +79,7 @@ import static org.onosproject.yangutils.datamodel.utils.DataModelUtils.detectCol
 public abstract class YangNotification
         extends YangNode
         implements YangLeavesHolder, YangCommonInfo, Parsable, CollisionDetector,
-        YangAugmentableNode, YangIfFeatureHolder {
+        YangAugmentableNode, YangIfFeatureHolder, InvalidOpTypeHolder {
 
     private static final long serialVersionUID = 806201611L;
 

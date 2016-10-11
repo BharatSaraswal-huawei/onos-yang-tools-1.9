@@ -102,6 +102,7 @@ import static org.onosproject.yangutils.translator.tojava.utils.TranslatorErrorT
 import static org.onosproject.yangutils.translator.tojava.utils.TranslatorUtils.getBeanFiles;
 import static org.onosproject.yangutils.translator.tojava.utils.TranslatorUtils.getErrorMsg;
 import static org.onosproject.yangutils.utils.UtilConstants.ARRAY_LIST_IMPORT;
+import static org.onosproject.yangutils.utils.UtilConstants.AUGMENT_MAP_TYPE;
 import static org.onosproject.yangutils.utils.UtilConstants.BIT_SET;
 import static org.onosproject.yangutils.utils.UtilConstants.BUILDER;
 import static org.onosproject.yangutils.utils.UtilConstants.CLOSE_CURLY_BRACKET;
@@ -119,9 +120,12 @@ import static org.onosproject.yangutils.utils.UtilConstants.OP_PARAM;
 import static org.onosproject.yangutils.utils.UtilConstants.PERIOD;
 import static org.onosproject.yangutils.utils.UtilConstants.PRIVATE;
 import static org.onosproject.yangutils.utils.UtilConstants.PROTECTED;
+import static org.onosproject.yangutils.utils.UtilConstants.SELECT_LEAF;
 import static org.onosproject.yangutils.utils.UtilConstants.SERVICE;
 import static org.onosproject.yangutils.utils.UtilConstants.SLASH;
+import static org.onosproject.yangutils.utils.UtilConstants.VALUE_LEAF;
 import static org.onosproject.yangutils.utils.UtilConstants.YANG;
+import static org.onosproject.yangutils.utils.UtilConstants.YANG_AUGMENTED_INFO_MAP;
 import static org.onosproject.yangutils.utils.io.impl.FileSystemUtil.closeFile;
 import static org.onosproject.yangutils.utils.io.impl.FileSystemUtil.readAppendFile;
 import static org.onosproject.yangutils.utils.io.impl.JavaDocGen.JavaDocType.ADD_TO_LIST;
@@ -1483,6 +1487,63 @@ public class TempJavaFragmentFiles {
     }
 
     /**
+     * Adds value leaf flag to temp files.
+     *
+     * @param config YANG plugin config
+     * @param node   YANG node
+     * @throws IOException IO exception
+     */
+    protected void addValueLeafFlag(YangPluginConfig config, YangNode node)
+            throws IOException {
+        JavaFileInfo info = ((JavaFileInfoContainer) node).getJavaFileInfo();
+        JavaQualifiedTypeInfoTranslator typeInfo =
+                new JavaQualifiedTypeInfoTranslator();
+        typeInfo.setClassInfo(BIT_SET);
+        typeInfo.setPkgInfo(JAVA_UTIL_PKG);
+        this.getJavaImportData().addImportInfo(typeInfo, info.getJavaName(),
+                                               info.getPackage());
+        JavaAttributeInfo attributeInfo =
+                getAttributeInfoForTheData(typeInfo, VALUE_LEAF, null, false, false);
+        addJavaSnippetInfoToApplicableTempFiles(attributeInfo, config);
+    }
+
+    /**
+     * Adds value leaf flag to temp files.
+     *
+     * @param config YANG plugin config
+     * @throws IOException IO exception
+     */
+    protected void addSelectLeafFlag(YangPluginConfig config)
+            throws IOException {
+        JavaQualifiedTypeInfoTranslator typeInfo =
+                new JavaQualifiedTypeInfoTranslator();
+        typeInfo.setClassInfo(BIT_SET);
+        typeInfo.setPkgInfo(JAVA_UTIL_PKG);
+        JavaAttributeInfo attributeInfo =
+                getAttributeInfoForTheData(typeInfo, SELECT_LEAF, null, false, false);
+        addJavaSnippetInfoToApplicableTempFiles(attributeInfo, config);
+    }
+
+    /**
+     * Adds value leaf flag to temp files.
+     *
+     * @param config YANG plugin config
+     * @throws IOException IO exception
+     */
+    protected void addYangAugmentedMap(YangPluginConfig config)
+            throws IOException {
+        JavaQualifiedTypeInfoTranslator typeInfo =
+                new JavaQualifiedTypeInfoTranslator();
+        typeInfo.setClassInfo(AUGMENT_MAP_TYPE);
+        //Fix for add yangAugmentedInfo in equals/hashcode/and to string method.
+        typeInfo.setPkgInfo(null);
+        JavaAttributeInfo attributeInfo =
+                getAttributeInfoForTheData(typeInfo, YANG_AUGMENTED_INFO_MAP,
+                                           null, false, false);
+        addJavaSnippetInfoToApplicableTempFiles(attributeInfo, config);
+    }
+
+    /**
      * Adds the new attribute info to the target generated temporary files.
      *
      * @param newAttrInfo  new attribute info
@@ -1493,16 +1554,20 @@ public class TempJavaFragmentFiles {
                                                  YangPluginConfig pluginConfig)
             throws IOException {
         isAttributePresent = true;
+        String attrName = newAttrInfo.getAttributeName();
+        boolean required = !attrName.equals(VALUE_LEAF) &&
+                !attrName.equals(SELECT_LEAF) &&
+                !attrName.equals(YANG_AUGMENTED_INFO_MAP);
         if (tempFlagSet(ATTRIBUTES_MASK)) {
             addAttribute(newAttrInfo);
         }
         if (tempFlagSet(GETTER_FOR_INTERFACE_MASK)) {
             addGetterForInterface(newAttrInfo);
         }
-        if (tempFlagSet(SETTER_FOR_INTERFACE_MASK)) {
+        if (tempFlagSet(SETTER_FOR_INTERFACE_MASK) && required) {
             addSetterForInterface(newAttrInfo);
         }
-        if (tempFlagSet(SETTER_FOR_CLASS_MASK)) {
+        if (tempFlagSet(SETTER_FOR_CLASS_MASK) && required) {
             addSetterImpl(newAttrInfo);
         }
         if (tempFlagSet(HASH_CODE_IMPL_MASK)) {
@@ -1526,8 +1591,8 @@ public class TempJavaFragmentFiles {
         }
         YangType attrType = newAttrInfo.getAttributeType();
         if (tempFlagSet(FILTER_CONTENT_MATCH_FOR_NODES_MASK) &&
-                attrType == null && !newAttrInfo.getAttributeName()
-                .contains(OPERATION_TYPE_ATTRIBUTE)) {
+                attrType == null && !attrName
+                .contains(OPERATION_TYPE_ATTRIBUTE) && required) {
             addSubtreeFilteringForChildNode(newAttrInfo);
         }
         if (tempFlagSet(FILTER_CONTENT_MATCH_FOR_LEAF_MASK) &&
@@ -1659,7 +1724,9 @@ public class TempJavaFragmentFiles {
             addBitsAndBase64Imports(curNode, imports);
             if (curNode instanceof YangAugmentableNode) {
                 addImportsForAugmentableClass(imports, true, false, curNode);
-                addInvocationExceptionImport(imports);
+                if (curNode.isOpTypeReq()) {
+                    addInvocationExceptionImport(imports);
+                }
             }
             sortImports(imports);
 
