@@ -1730,7 +1730,6 @@ public final class MethodsGenerator {
                         + SPACE + COLON + SPACE + getQuotedString(FALSE);
             case LEAFREF:
                 //TODO:
-            case IDENTITYREF:
                 //TODO:
             case INSTANCE_IDENTIFIER:
                 //TODO:
@@ -1738,6 +1737,7 @@ public final class MethodsGenerator {
             case UINT64:
             case DECIMAL64:
             case DERIVED:
+            case IDENTITYREF:
             case UNION:
                 return name + PERIOD +
                         TO_STRING_METHOD + OPEN_CLOSE_BRACKET_STRING;

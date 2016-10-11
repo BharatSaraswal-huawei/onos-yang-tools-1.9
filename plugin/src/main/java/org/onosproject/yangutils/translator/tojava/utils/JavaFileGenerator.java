@@ -260,16 +260,15 @@ public final class JavaFileGenerator {
                 !(curNode instanceof YangChoice)) {
             methods.add(getYangAugmentInfoInterface());
         }
-
-        if (curNode instanceof YangCase) {
-            YangNode caseParent = curNode.getParent();
-            JavaQualifiedTypeInfo qualifiedTypeInfo =
-                    getQualifierInfoForCasesParent(caseParent,
-                                                   fileInfo.getPluginConfig());
-            methods.add(processSubtreeFilteringInterface(
-                    qualifiedTypeInfo.getClassInfo()));
-        } else {
-            if (curNode.isOpTypeReq()) {
+        if (curNode.isOpTypeReq()) {
+            if (curNode instanceof YangCase) {
+                YangNode caseParent = curNode.getParent();
+                JavaQualifiedTypeInfo qualifiedTypeInfo =
+                        getQualifierInfoForCasesParent(caseParent,
+                                                       fileInfo.getPluginConfig());
+                methods.add(processSubtreeFilteringInterface(
+                        qualifiedTypeInfo.getClassInfo()));
+            } else {
                 methods.add(processSubtreeFilteringInterface(className));
             }
         }
