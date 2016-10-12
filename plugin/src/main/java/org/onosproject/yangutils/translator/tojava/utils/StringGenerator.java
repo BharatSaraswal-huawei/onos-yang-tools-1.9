@@ -77,7 +77,6 @@ import static org.onosproject.yangutils.utils.UtilConstants.FOUR_SPACE_INDENTATI
 import static org.onosproject.yangutils.utils.UtilConstants.FROM_STRING_METHOD_NAME;
 import static org.onosproject.yangutils.utils.UtilConstants.GET;
 import static org.onosproject.yangutils.utils.UtilConstants.GOOGLE_MORE_OBJECT_METHOD_STATIC_STRING;
-import static org.onosproject.yangutils.utils.UtilConstants.HASH_MAP;
 import static org.onosproject.yangutils.utils.UtilConstants.IF;
 import static org.onosproject.yangutils.utils.UtilConstants.IMPLEMENTS;
 import static org.onosproject.yangutils.utils.UtilConstants.IMPORT;
@@ -94,8 +93,6 @@ import static org.onosproject.yangutils.utils.UtilConstants.LONG_WRAPPER;
 import static org.onosproject.yangutils.utils.UtilConstants.MORE_OBJ_ATTR;
 import static org.onosproject.yangutils.utils.UtilConstants.NEW;
 import static org.onosproject.yangutils.utils.UtilConstants.NEW_LINE;
-import static org.onosproject.yangutils.utils.UtilConstants.NOT;
-import static org.onosproject.yangutils.utils.UtilConstants.NULL;
 import static org.onosproject.yangutils.utils.UtilConstants.OBJECT;
 import static org.onosproject.yangutils.utils.UtilConstants.OBJECT_STRING;
 import static org.onosproject.yangutils.utils.UtilConstants.OF;
@@ -129,6 +126,7 @@ import static org.onosproject.yangutils.utils.UtilConstants.STRING_BUILDER;
 import static org.onosproject.yangutils.utils.UtilConstants.STRING_BUILDER_VAR;
 import static org.onosproject.yangutils.utils.UtilConstants.THIS;
 import static org.onosproject.yangutils.utils.UtilConstants.TMP_VAL;
+import static org.onosproject.yangutils.utils.UtilConstants.TO_STRING_METHOD;
 import static org.onosproject.yangutils.utils.UtilConstants.TRY;
 import static org.onosproject.yangutils.utils.UtilConstants.TWELVE_SPACE_INDENTATION;
 import static org.onosproject.yangutils.utils.UtilConstants.TWENTY_SPACE_INDENTATION;
@@ -328,29 +326,16 @@ public final class StringGenerator {
                         signatureClose() + getReturnString(
                         THIS + signatureClose(), space);
             case AUGMENTED_MAP_ADD:
-                cond = YANG_AUGMENTED_INFO_MAP
-                        + SPACE + EQUAL + EQUAL + SPACE + NULL;
-                return getIfConditionBegin(space, cond) + space +
-                        FOUR_SPACE_INDENTATION +
-                        YANG_AUGMENTED_INFO_MAP + SPACE + EQUAL +
-                        SPACE + NEW
-                        + SPACE + HASH_MAP + DIAMOND_OPEN_BRACKET
-                        + DIAMOND_CLOSE_BRACKET + OPEN_CLOSE_BRACKET_STRING
-                        + signatureClose() + space + CLOSE_CURLY_BRACKET
-                        + NEW_LINE +
-                        space + YANG_AUGMENTED_INFO_MAP +
+                return space + YANG_AUGMENTED_INFO_MAP +
                         PERIOD + PUT + OPEN_PARENTHESIS + CLASS +
                         OBJECT_STRING + COMMA + SPACE + VALUE +
                         CLOSE_PARENTHESIS + signatureClose();
             case AUGMENTED_MAP_GET_VALUE:
-                cond = YANG_AUGMENTED_INFO_MAP
-                        + SPACE + NOT + EQUAL + SPACE + NULL;
-                return getIfConditionBegin(space, cond) + getReturnString(
+                return getReturnString(
                         YANG_AUGMENTED_INFO_MAP + PERIOD + GET +
                                 brackets(OPEN_CLOSE_BRACKET_WITH_VALUE, CLASS +
                                         OBJECT_STRING, null) + signatureClose(),
-                        space) + space + CLOSE_CURLY_BRACKET + NEW_LINE +
-                        space + getReturnString(NULL, space) + signatureClose();
+                        space);
             case AUGMENTED_MAP_GETTER:
                 return getReturnString(YANG_AUGMENTED_INFO_MAP +
                                                signatureClose(), space);
@@ -926,12 +911,7 @@ public final class StringGenerator {
      * @return value leaf flag setter
      */
     static String getValueLeafSetString(String name) {
-        String str = EIGHT_SPACE_INDENTATION +
-                "if (valueLeafFlags == null) {\n" +
-                TWELVE_SPACE_INDENTATION + "valueLeafFlags = new BitSet();\n" +
-                EIGHT_SPACE_INDENTATION + CLOSE_CURLY_BRACKET;
-
-        return str + "\n        valueLeafFlags.set(LeafIdentifier." +
+        return "        valueLeafFlags.set(LeafIdentifier." +
                 name.toUpperCase() + ".getLeafIndex());\n";
     }
 
@@ -1229,5 +1209,16 @@ public final class StringGenerator {
                 .append(NEW_LINE).append(FOUR_SPACE_INDENTATION).append(trimAtLast(
                 getOmitNullValueString(), array)).append(signatureClose());
         return attr.toString();
+    }
+
+    /**
+     * Returns to string call.
+     *
+     * @param name name of attribute
+     * @return to string call for attribute
+     */
+    static String getToStringCall(String name) {
+        return name + PERIOD +
+                TO_STRING_METHOD + OPEN_CLOSE_BRACKET_STRING;
     }
 }

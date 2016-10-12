@@ -20,6 +20,7 @@ import org.onosproject.yangutils.datamodel.YangAtomicPath;
 import org.onosproject.yangutils.datamodel.YangCompilerAnnotation;
 import org.onosproject.yangutils.datamodel.YangEnum;
 import org.onosproject.yangutils.datamodel.YangEnumeration;
+import org.onosproject.yangutils.datamodel.YangLeafRef;
 import org.onosproject.yangutils.datamodel.YangNode;
 import org.onosproject.yangutils.datamodel.YangNotification;
 import org.onosproject.yangutils.datamodel.YangType;
@@ -72,6 +73,7 @@ import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.
 import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.getReturnString;
 import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.getSetValueParaCondition;
 import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.getStringBuilderAttr;
+import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.getToStringCall;
 import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.getTrySubString;
 import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.getValueLeafSetString;
 import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.ifAndAndCondition;
@@ -1703,7 +1705,8 @@ public final class MethodsGenerator {
      * @param type      type of attribute
      * @param name      @return to string method body for typedef class
      */
-    private static String getToStringForSpecialType(String className, YangType type, String name) {
+    private static String getToStringForSpecialType(String className, YangType type,
+                                                    String name) {
         switch (type.getDataType()) {
             case INT8:
             case INT16:
@@ -1714,33 +1717,36 @@ public final class MethodsGenerator {
             case UINT32:
                 return STRING_DATA_TYPE + PERIOD + VALUE + OF_CAPS + brackets(
                         OPEN_CLOSE_BRACKET_WITH_VALUE, name, null);
+
             case BINARY:
-                return getToStringForBinary(name) + PERIOD +
-                        TO_STRING_METHOD + OPEN_CLOSE_BRACKET_STRING;
+                return getToStringCall(getToStringForBinary(name));
+
             case BITS:
                 return className + getCapitalCase(name) + PERIOD +
                         TO_STRING_METHOD + brackets(
                         OPEN_CLOSE_BRACKET_WITH_VALUE, name, null);
-            case ENUMERATION:
-                return name + PERIOD + TO_STRING_METHOD +
-                        OPEN_CLOSE_BRACKET_STRING;
+
             case BOOLEAN:
             case EMPTY:
                 return name + SPACE + QUESTION_MARK + SPACE + getQuotedString(TRUE)
                         + SPACE + COLON + SPACE + getQuotedString(FALSE);
+
             case LEAFREF:
-                //TODO:
-                //TODO:
+                YangLeafRef<?> lri = (YangLeafRef<?>) type.getDataTypeExtendedInfo();
+                YangType<?> rt = lri.isInGrouping() ? null : lri
+                        .getEffectiveDataType();
+                return rt == null ? getToStringCall(name) :
+                        getToStringForSpecialType(className, rt, name);
+
+            case ENUMERATION:
             case INSTANCE_IDENTIFIER:
-                //TODO:
-                return name;
             case UINT64:
             case DECIMAL64:
             case DERIVED:
             case IDENTITYREF:
             case UNION:
-                return name + PERIOD +
-                        TO_STRING_METHOD + OPEN_CLOSE_BRACKET_STRING;
+                return getToStringCall(name);
+
             default:
                 return name;
         }

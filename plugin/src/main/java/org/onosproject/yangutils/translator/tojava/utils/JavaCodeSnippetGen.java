@@ -43,6 +43,7 @@ import static org.onosproject.yangutils.utils.UtilConstants.EMPTY_STRING;
 import static org.onosproject.yangutils.utils.UtilConstants.ENUM;
 import static org.onosproject.yangutils.utils.UtilConstants.EQUAL;
 import static org.onosproject.yangutils.utils.UtilConstants.FOUR_SPACE_INDENTATION;
+import static org.onosproject.yangutils.utils.UtilConstants.HASH_MAP;
 import static org.onosproject.yangutils.utils.UtilConstants.INT;
 import static org.onosproject.yangutils.utils.UtilConstants.INT_MAX_RANGE_ATTR;
 import static org.onosproject.yangutils.utils.UtilConstants.INT_MIN_RANGE_ATTR;
@@ -52,12 +53,14 @@ import static org.onosproject.yangutils.utils.UtilConstants.LONG_MIN_RANGE_ATTR;
 import static org.onosproject.yangutils.utils.UtilConstants.NEW;
 import static org.onosproject.yangutils.utils.UtilConstants.NEW_LINE;
 import static org.onosproject.yangutils.utils.UtilConstants.OPEN_CLOSE_BRACKET_STRING;
+import static org.onosproject.yangutils.utils.UtilConstants.OPEN_CLOSE_DIAMOND_STRING;
 import static org.onosproject.yangutils.utils.UtilConstants.PERIOD;
 import static org.onosproject.yangutils.utils.UtilConstants.PRIVATE;
 import static org.onosproject.yangutils.utils.UtilConstants.PUBLIC;
 import static org.onosproject.yangutils.utils.UtilConstants.QUEUE;
 import static org.onosproject.yangutils.utils.UtilConstants.QUOTES;
 import static org.onosproject.yangutils.utils.UtilConstants.SCHEMA_NAME;
+import static org.onosproject.yangutils.utils.UtilConstants.SELECT_LEAF;
 import static org.onosproject.yangutils.utils.UtilConstants.SEMI_COLON;
 import static org.onosproject.yangutils.utils.UtilConstants.SET;
 import static org.onosproject.yangutils.utils.UtilConstants.SET_VALUE_PARA;
@@ -72,6 +75,8 @@ import static org.onosproject.yangutils.utils.UtilConstants.UINT_MAX_RANGE_ATTR;
 import static org.onosproject.yangutils.utils.UtilConstants.UINT_MIN_RANGE_ATTR;
 import static org.onosproject.yangutils.utils.UtilConstants.ULONG_MAX_RANGE_ATTR;
 import static org.onosproject.yangutils.utils.UtilConstants.ULONG_MIN_RANGE_ATTR;
+import static org.onosproject.yangutils.utils.UtilConstants.VALUE_LEAF;
+import static org.onosproject.yangutils.utils.UtilConstants.YANG_AUGMENTED_INFO_MAP;
 import static org.onosproject.yangutils.utils.io.impl.JavaDocGen.JavaDocType.ENUM_ATTRIBUTE;
 import static org.onosproject.yangutils.utils.io.impl.JavaDocGen.enumJavaDocForInnerClass;
 import static org.onosproject.yangutils.utils.io.impl.JavaDocGen.getJavaDoc;
@@ -138,8 +143,20 @@ public final class JavaCodeSnippetGen {
             }
 
             attrDef.append(attrType).append(SPACE)
-                    .append(attrName).append(SEMI_COLON)
-                    .append(NEW_LINE);
+                    .append(attrName);
+            //Initialize select leaf/value leaf/ augment map attribute.
+            if (attrName.equals(SELECT_LEAF) || attrName.equals(VALUE_LEAF)) {
+                attrDef.append(SPACE).append(EQUAL).append(SPACE).append(NEW)
+                        .append(SPACE).append(BIT_SET)
+                        .append(OPEN_CLOSE_BRACKET_STRING);
+            } else if (attrName.equals(YANG_AUGMENTED_INFO_MAP)) {
+                attrDef.append(SPACE).append(EQUAL).append(SPACE).append(NEW)
+                        .append(SPACE).append(HASH_MAP)
+                        .append(OPEN_CLOSE_DIAMOND_STRING)
+                        .append(OPEN_CLOSE_BRACKET_STRING);
+            }
+
+            attrDef.append(signatureClose());
         } else {
             // Add starting definition.
             addAttrStartDef(annotation, attrDef);
@@ -199,13 +216,11 @@ public final class JavaCodeSnippetGen {
         if (annotation != null &&
                 annotation.getYangAppDataStructure() != null) {
             attrDef.append(DIAMOND_CLOSE_BRACKET).append(SPACE)
-                    .append(attrName).append(SEMI_COLON)
-                    .append(NEW_LINE);
+                    .append(attrName).append(signatureClose());
         } else {
             attrDef.append(DIAMOND_CLOSE_BRACKET).append(SPACE).append(attrName)
                     .append(SPACE).append(EQUAL).append(SPACE).append(NEW)
-                    .append(SPACE).append(ARRAY_LIST).append(SEMI_COLON)
-                    .append(NEW_LINE);
+                    .append(SPACE).append(ARRAY_LIST).append(signatureClose());
         }
     }
 

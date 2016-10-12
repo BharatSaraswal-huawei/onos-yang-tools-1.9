@@ -9,6 +9,7 @@ module types {
      type union {
          type ipv4-address;
          type ipv6-address;
+         type leaf;
      }
   }
 
@@ -34,4 +35,18 @@ module types {
                        }
 
 }
+
+
+ container con1 {
+     leaf abc {
+         type int32;
+     }
+ }
+
+ typedef leaf {
+     type leafref {
+         path "/con1/abc";
+     }
+ }
+
 }

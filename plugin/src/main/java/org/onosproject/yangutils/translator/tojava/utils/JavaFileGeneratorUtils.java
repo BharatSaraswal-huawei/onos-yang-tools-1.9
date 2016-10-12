@@ -805,7 +805,7 @@ public final class JavaFileGeneratorUtils {
                                            YangType<?> attributeType) {
         if (attributeName.equalsIgnoreCase(LEAFREF)) {
             YangLeafRef leafRef = (YangLeafRef) attributeType.getDataTypeExtendedInfo();
-            if (!leafRef.isInGrouping()) {
+            if (leafRef != null && !leafRef.isInGrouping()) {
                 return attributeType.getDataTypeName();
             }
         }

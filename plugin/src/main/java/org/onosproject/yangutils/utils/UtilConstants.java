@@ -852,6 +852,11 @@ public final class UtilConstants {
     public static final String OPEN_CLOSE_BRACKET_STRING = "()";
 
     /**
+     * Static attribute for empty parameter function call.
+     */
+    public static final String OPEN_CLOSE_DIAMOND_STRING = "<>";
+
+    /**
      * Static attribute for open curly bracket syntax.
      */
     public static final String OPEN_CURLY_BRACKET = "{";
