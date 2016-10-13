@@ -16,12 +16,14 @@
 
 package org.onosproject.yangutils.datamodel;
 
-import java.io.Serializable;
-
 import org.onosproject.yangutils.datamodel.exceptions.DataModelException;
 import org.onosproject.yangutils.datamodel.utils.Parsable;
 import org.onosproject.yangutils.datamodel.utils.YangConstructType;
 import org.onosproject.yangutils.datamodel.utils.builtindatatype.YangUint64;
+
+import java.io.Serializable;
+
+import static org.onosproject.yangutils.datamodel.utils.YangConstructType.PATTERN_DATA;
 
 /*-
  * Reference RFC 6020.
@@ -98,7 +100,8 @@ public class YangLengthRestriction extends DefaultLocationInfo
      * Creates a YANG length restriction object.
      */
     public YangLengthRestriction() {
-        setLengthRestriction(new YangRangeRestriction<YangUint64>());
+        setLengthRestriction(new YangRangeRestriction<>());
+        yangAppErrorInfo = new YangAppErrorInfo();
     }
 
     /**
@@ -162,7 +165,7 @@ public class YangLengthRestriction extends DefaultLocationInfo
 
     @Override
     public YangConstructType getYangConstructType() {
-        return YangConstructType.PATTERN_DATA;
+        return PATTERN_DATA;
     }
 
     @Override

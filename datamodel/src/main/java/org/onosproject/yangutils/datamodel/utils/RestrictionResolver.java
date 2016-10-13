@@ -58,7 +58,7 @@ public final class RestrictionResolver {
      * @param hasReferredRestriction whether has referred restriction
      * @param curRangeString         caller type's range string
      * @param effectiveType          effective type, when called from linker
-     * @param fileName
+     * @param fileName               file name
      * @return YANG range restriction
      * @throws DataModelException a violation in data model rule
      */
@@ -102,20 +102,20 @@ public final class RestrictionResolver {
 
             try {
                 if (hasReferredRestriction && startInterval.equals(MIN_KEYWORD)
-                        && refRangeRestriction.getMinRestrictedvalue() != null) {
-                    startValue = refRangeRestriction.getMinRestrictedvalue();
+                        && refRangeRestriction.getMinRestrictedValue() != null) {
+                    startValue = refRangeRestriction.getMinRestrictedValue();
                 } else if (hasReferredRestriction && startInterval.equals(MAX_KEYWORD)
-                        && refRangeRestriction.getMaxRestrictedvalue() != null) {
-                    startValue = refRangeRestriction.getMaxRestrictedvalue();
+                        && refRangeRestriction.getMaxRestrictedValue() != null) {
+                    startValue = refRangeRestriction.getMaxRestrictedValue();
                 } else {
                     startValue = getDataObjectFromString(startInterval, effectiveType);
                 }
                 if (hasReferredRestriction && endInterval.equals(MIN_KEYWORD)
-                        && refRangeRestriction.getMinRestrictedvalue() != null) {
-                    endValue = refRangeRestriction.getMinRestrictedvalue();
+                        && refRangeRestriction.getMinRestrictedValue() != null) {
+                    endValue = refRangeRestriction.getMinRestrictedValue();
                 } else if (hasReferredRestriction && endInterval.equals(MAX_KEYWORD)
-                        && refRangeRestriction.getMaxRestrictedvalue() != null) {
-                    endValue = refRangeRestriction.getMaxRestrictedvalue();
+                        && refRangeRestriction.getMaxRestrictedValue() != null) {
+                    endValue = refRangeRestriction.getMaxRestrictedValue();
                 } else {
                     endValue = getDataObjectFromString(endInterval, effectiveType);
                 }
@@ -148,7 +148,7 @@ public final class RestrictionResolver {
      * @param charPositionInLine     error character position in line
      * @param hasReferredRestriction whether has referred restriction
      * @param curLengthString        caller type's length string
-     * @param fileName
+     * @param fileName               file name
      * @return YANG range restriction
      * @throws DataModelException a violation in data model rule
      */
@@ -192,20 +192,20 @@ public final class RestrictionResolver {
 
             try {
                 if (hasReferredRestriction && startInterval.equals(MIN_KEYWORD)
-                        && refLengthRestriction.getMinRestrictedvalue() != null) {
-                    startValue = refLengthRestriction.getMinRestrictedvalue();
+                        && refLengthRestriction.getMinRestrictedValue() != null) {
+                    startValue = refLengthRestriction.getMinRestrictedValue();
                 } else if (hasReferredRestriction && startInterval.equals(MAX_KEYWORD)
-                        && refLengthRestriction.getMaxRestrictedvalue() != null) {
-                    startValue = refLengthRestriction.getMaxRestrictedvalue();
+                        && refLengthRestriction.getMaxRestrictedValue() != null) {
+                    startValue = refLengthRestriction.getMaxRestrictedValue();
                 } else {
                     startValue = getDataObjectFromString(startInterval, YangDataTypes.UINT64);
                 }
                 if (hasReferredRestriction && endInterval.equals(MIN_KEYWORD)
-                        && refLengthRestriction.getMinRestrictedvalue() != null) {
-                    endValue = refLengthRestriction.getMinRestrictedvalue();
+                        && refLengthRestriction.getMinRestrictedValue() != null) {
+                    endValue = refLengthRestriction.getMinRestrictedValue();
                 } else if (hasReferredRestriction && endInterval.equals(MAX_KEYWORD)
-                        && refLengthRestriction.getMaxRestrictedvalue() != null) {
-                    endValue = refLengthRestriction.getMaxRestrictedvalue();
+                        && refLengthRestriction.getMaxRestrictedValue() != null) {
+                    endValue = refLengthRestriction.getMaxRestrictedValue();
                 } else {
                     endValue = getDataObjectFromString(endInterval, YangDataTypes.UINT64);
                 }

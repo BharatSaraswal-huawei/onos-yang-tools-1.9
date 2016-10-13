@@ -32,13 +32,11 @@ import org.onosproject.yangutils.datamodel.utils.builtindatatype.YangDataTypes;
 import org.onosproject.yangutils.translator.exception.TranslatorException;
 import org.onosproject.yangutils.translator.tojava.javamodel.JavaLeafInfoContainer;
 import org.onosproject.yangutils.translator.tojava.javamodel.YangJavaGroupingTranslator;
-import org.onosproject.yangutils.translator.tojava.utils.BitsJavaInfoHandler;
 import org.onosproject.yangutils.translator.tojava.utils.JavaExtendsListHolder;
 import org.onosproject.yangutils.utils.io.YangPluginConfig;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.onosproject.yangutils.datamodel.utils.DataModelUtils.getParentNodeInGenCode;
@@ -69,6 +67,7 @@ import static org.onosproject.yangutils.translator.tojava.JavaAttributeInfo.getA
 import static org.onosproject.yangutils.translator.tojava.JavaQualifiedTypeInfoTranslator.getQualifiedInfoOfFromString;
 import static org.onosproject.yangutils.translator.tojava.JavaQualifiedTypeInfoTranslator.getQualifiedTypeInfoOfCurNode;
 import static org.onosproject.yangutils.translator.tojava.javamodel.AttributesJavaDataType.updateJavaFileInfo;
+import static org.onosproject.yangutils.translator.tojava.utils.JavaFileGeneratorUtils.generateBitsFile;
 import static org.onosproject.yangutils.translator.tojava.utils.JavaCodeSnippetGen.generateEnumAttributeString;
 import static org.onosproject.yangutils.translator.tojava.utils.JavaCodeSnippetGen.getJavaAttributeDefinition;
 import static org.onosproject.yangutils.translator.tojava.utils.JavaCodeSnippetGen.sortImports;
@@ -413,11 +412,6 @@ public class TempJavaFragmentFiles {
     private boolean isAttributePresent;
 
     /**
-     * List of bits attributes.
-     */
-    private List<BitsJavaInfoHandler> bitsHandler = new ArrayList<>();
-
-    /**
      * Creates an instance of temp JAVA fragment files.
      */
     TempJavaFragmentFiles() {
@@ -754,9 +748,11 @@ public class TempJavaFragmentFiles {
      */
     static void addBitsHandler(JavaAttributeInfo attr, YangType type,
                                TempJavaFragmentFiles tempFiles) {
-        BitsJavaInfoHandler handler
-                = new BitsJavaInfoHandler(attr, type);
-        tempFiles.getBitsHandler().add(handler);
+        try {
+            generateBitsFile(attr, type, tempFiles.getJavaFileInfo(), tempFiles);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -1227,14 +1223,13 @@ public class TempJavaFragmentFiles {
      *
      * @param attr           type attribute info
      * @param fromStringAttr from string attribute info
-     * @param genClassName   generated class name
      * @throws IOException when fails to append to temporary file
      */
     void addFromStringMethod(JavaAttributeInfo attr,
-                             JavaAttributeInfo fromStringAttr, String genClassName)
+                             JavaAttributeInfo fromStringAttr)
             throws IOException {
         appendToFile(fromStringImplTempFileHandle,
-                     getFromStringMethod(attr, fromStringAttr, genClassName) + NEW_LINE);
+                     getFromStringMethod(attr, fromStringAttr) + NEW_LINE);
     }
 
     /**
@@ -1627,8 +1622,7 @@ public class TempJavaFragmentFiles {
                                 typeInfo, newAttrInfo.getAttributeName(),
                                 attrType, getIsQualifiedAccessOrAddToImportList(
                                         typeInfo), false);
-                addFromStringMethod(newAttrInfo, fromStringAttributeInfo,
-                                    getGeneratedJavaClassName());
+                addFromStringMethod(newAttrInfo, fromStringAttributeInfo);
             }
         }
     }
@@ -2027,15 +2021,6 @@ public class TempJavaFragmentFiles {
      */
     private boolean tempFlagSet(int flag) {
         return (tempFilesFlagSet & flag) != 0;
-    }
-
-    /**
-     * Returns list of bits attributes.
-     *
-     * @return list of bits attributes
-     */
-    public List<BitsJavaInfoHandler> getBitsHandler() {
-        return bitsHandler;
     }
 
     /**

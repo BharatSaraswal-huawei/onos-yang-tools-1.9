@@ -258,11 +258,11 @@ public final class StringGenerator {
                 return TWENTY_SPACE_INDENTATION + CLOSE_CURLY_BRACKET +
                         NEW_LINE;
             case TWENTY_EIGHT_SPACE:
-                return FOUR_SPACE_INDENTATION + CLOSE_CURLY_BRACKET +
-                        NEW_LINE;
+                return TWENTY_SPACE_INDENTATION + EIGHT_SPACE_INDENTATION +
+                        CLOSE_CURLY_BRACKET + NEW_LINE;
             case TWENTY_FOUR_SPACE:
-                return FOUR_SPACE_INDENTATION + CLOSE_CURLY_BRACKET +
-                        NEW_LINE;
+                return TWENTY_SPACE_INDENTATION + FOUR_SPACE_INDENTATION +
+                        CLOSE_CURLY_BRACKET + NEW_LINE;
             default:
                 return FOUR_SPACE_INDENTATION + CLOSE_CURLY_BRACKET +
                         NEW_LINE;

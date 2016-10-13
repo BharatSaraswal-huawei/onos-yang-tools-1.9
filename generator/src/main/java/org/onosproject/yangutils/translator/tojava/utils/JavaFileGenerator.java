@@ -85,7 +85,6 @@ import static org.onosproject.yangutils.translator.tojava.GeneratedTempFileType.
 import static org.onosproject.yangutils.translator.tojava.TempJavaFragmentFiles.getCurNodeAsAttributeInTarget;
 import static org.onosproject.yangutils.translator.tojava.YangJavaModelUtils.getQualifierInfoForCasesParent;
 import static org.onosproject.yangutils.translator.tojava.YangJavaModelUtils.isGetSetOfRootNodeRequired;
-import static org.onosproject.yangutils.translator.tojava.utils.BitsJavaInfoHandler.generateBitsFile;
 import static org.onosproject.yangutils.translator.tojava.utils.IndentationType.FOUR_SPACE;
 import static org.onosproject.yangutils.translator.tojava.utils.JavaCodeSnippetGen.getEnumsValueAttribute;
 import static org.onosproject.yangutils.translator.tojava.utils.JavaCodeSnippetGen.getEventEnumTypeStart;
@@ -630,11 +629,6 @@ public final class JavaFileGenerator {
             methods.add(getToStringMethodOpen() + getDataFromTempFileHandle(
                     TO_STRING_IMPL_MASK, getBeanFiles(curNode), path) +
                                 getToStringMethodClose());
-
-            for (BitsJavaInfoHandler handler : getBeanFiles(curNode)
-                    .getBitsHandler()) {
-                generateBitsFile(handler.getAttr(), handler.getYangType(), curNode);
-            }
         } catch (IOException e) {
             throw new IOException(getErrorMsg(className, IMPL_CLASS));
         }
@@ -707,7 +701,7 @@ public final class JavaFileGenerator {
                                                       getTypeFiles(curNode), path)));
 
             // To string method.
-            addTypedefToString(curNode, methods, path);
+            addTypedefToString(curNode, methods);
 
             JavaCodeGeneratorInfo javaGenInfo = (JavaCodeGeneratorInfo) curNode;
 
@@ -748,25 +742,17 @@ public final class JavaFileGenerator {
      *
      * @param curNode current node
      * @param methods list of methods string
-     * @param path    file path
      * @throws IOException a violation in IO rule
      */
     private static void addTypedefToString(YangNode curNode,
-                                           List<String> methods, String path)
+                                           List<String> methods)
             throws IOException {
         //To string method.
 
         List<YangType<?>> types = ((YangTypeDef) curNode).getTypeList();
         YangType type = types.get(0);
-        String className = ((JavaFileInfoContainer) curNode).getJavaFileInfo()
-                .getJavaName();
         methods.add(getToStringForType(getCamelCase(type.getDataTypeName(),
-                                                    null), type, getCapitalCase(className)));
-        for (BitsJavaInfoHandler handler : getTypeFiles(curNode)
-                .getBitsHandler()) {
-            generateBitsFile(handler.getAttr(), handler.getYangType(), curNode);
-        }
-
+                                                    null), type));
     }
 
     /**
@@ -876,12 +862,7 @@ public final class JavaFileGenerator {
 
             //To string method.
             methods.add(getUnionToStringMethod(
-                    ((YangUnion) curNode).getTypeList(), getCapitalCase(className)));
-
-            for (BitsJavaInfoHandler handler : getTypeFiles(curNode)
-                    .getBitsHandler()) {
-                generateBitsFile(handler.getAttr(), handler.getYangType(), curNode);
-            }
+                    ((YangUnion) curNode).getTypeList()));
 
             //From string method.
             methods.add(getFromStringMethodSignature(className) +

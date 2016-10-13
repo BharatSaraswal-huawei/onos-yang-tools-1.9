@@ -20,16 +20,18 @@ import java.io.Serializable;
 /**
  * Representation of data model node to maintain path predicate in YANG absolute-path or relative-path.
  */
-public class YangPathPredicate<T> extends DefaultLocationInfo
+public class YangPathPredicate extends DefaultLocationInfo
         implements Serializable {
 
     private static final long serialVersionUID = 806201689L;
 
-    // YANG node identifier.
+    // YANG node-id.
     private YangNodeIdentifier nodeIdentifier;
 
-    // Left axis node will represent the nodeidentifier before equality sign in path predicate.
-    private T leftAxisNode;
+    /**
+     * Left axis represents node-id before equality sign.
+     */
+    private Object leftAxisNode;
 
     // YANG path operator.
     private YangPathOperator pathOperator;
@@ -37,8 +39,10 @@ public class YangPathPredicate<T> extends DefaultLocationInfo
     // YANG relative path.
     private YangRelativePath rightRelativePath;
 
-    // Right axis node will represent the nodeidentifier after equality sign in path predicate.
-    private T rightAxisNode;
+    /**
+     * Right axis node represents the node-id after the equality sign.
+     */
+    private Object rightAxisNode;
 
     /**
      * Returns the path expression operator.
@@ -77,9 +81,9 @@ public class YangPathPredicate<T> extends DefaultLocationInfo
     }
 
     /**
-     * Returns the nodeidentifier.
+     * Returns the node identifier.
      *
-     * @return the nodeidentifier
+     * @return the node id
      */
     public YangNodeIdentifier getNodeIdentifier() {
         return nodeIdentifier;
@@ -89,7 +93,6 @@ public class YangPathPredicate<T> extends DefaultLocationInfo
      * Sets the YANG node identifier.
      *
      * @param nodeIdentifier Sets the node identifier
-     *
      */
     public void setNodeIdentifier(YangNodeIdentifier nodeIdentifier) {
         this.nodeIdentifier = nodeIdentifier;
@@ -100,7 +103,7 @@ public class YangPathPredicate<T> extends DefaultLocationInfo
      *
      * @return the left axis node
      */
-    public T getLeftAxisNode() {
+    public Object getLeftAxisNode() {
         return leftAxisNode;
     }
 
@@ -109,7 +112,7 @@ public class YangPathPredicate<T> extends DefaultLocationInfo
      *
      * @param leftAxisNode Sets the left axis node
      */
-    public void setLeftAxisNode(T leftAxisNode) {
+    public void setLeftAxisNode(Object leftAxisNode) {
         this.leftAxisNode = leftAxisNode;
     }
 
@@ -118,7 +121,7 @@ public class YangPathPredicate<T> extends DefaultLocationInfo
      *
      * @return the right axis node
      */
-    public T getRightAxisNode() {
+    public Object getRightAxisNode() {
         return rightAxisNode;
     }
 
@@ -127,7 +130,7 @@ public class YangPathPredicate<T> extends DefaultLocationInfo
      *
      * @param rightAxisNode Sets the right axis node
      */
-    public void setRightAxisNode(T rightAxisNode) {
+    public void setRightAxisNode(Object rightAxisNode) {
         this.rightAxisNode = rightAxisNode;
     }
 }

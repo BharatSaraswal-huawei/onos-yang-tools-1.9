@@ -33,7 +33,6 @@ import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.
 import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.getDefaultDefinition;
 import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.getImportString;
 import static org.onosproject.yangutils.translator.tojava.utils.StringGenerator.signatureClose;
-import static org.onosproject.yangutils.utils.UtilConstants.ARRAY_LIST;
 import static org.onosproject.yangutils.utils.UtilConstants.BIT_SET;
 import static org.onosproject.yangutils.utils.UtilConstants.COMMA;
 import static org.onosproject.yangutils.utils.UtilConstants.DIAMOND_CLOSE_BRACKET;
@@ -168,7 +167,7 @@ public final class JavaCodeSnippetGen {
             attrDef.append(attrType);
 
             // Add ending definition.
-            addAttrEndDef(annotation, attrDef, attrName);
+            addAttrEndDef(attrDef, attrName);
         }
         return attrDef.toString();
     }
@@ -206,22 +205,12 @@ public final class JavaCodeSnippetGen {
 
     /**
      * Adds ending attribute definition.
-     *
-     * @param annotation compiler annotation
-     * @param attrDef    JAVA attribute definition
+     *  @param attrDef    JAVA attribute definition
      * @param attrName   name of attribute
      */
-    private static void addAttrEndDef(YangCompilerAnnotation annotation,
-                                      StringBuilder attrDef, String attrName) {
-        if (annotation != null &&
-                annotation.getYangAppDataStructure() != null) {
-            attrDef.append(DIAMOND_CLOSE_BRACKET).append(SPACE)
-                    .append(attrName).append(signatureClose());
-        } else {
-            attrDef.append(DIAMOND_CLOSE_BRACKET).append(SPACE).append(attrName)
-                    .append(SPACE).append(EQUAL).append(SPACE).append(NEW)
-                    .append(SPACE).append(ARRAY_LIST).append(signatureClose());
-        }
+    private static void addAttrEndDef(StringBuilder attrDef, String attrName) {
+        attrDef.append(DIAMOND_CLOSE_BRACKET).append(SPACE)
+                .append(attrName).append(signatureClose());
     }
 
     /**

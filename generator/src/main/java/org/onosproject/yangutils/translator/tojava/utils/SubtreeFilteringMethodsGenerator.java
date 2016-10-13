@@ -671,8 +671,8 @@ public final class SubtreeFilteringMethodsGenerator {
         }
 
         String method = StringGenerator
-                .getIfConditionBegin(EIGHT_SPACE_INDENTATION, name + "()  != " +
-                        "null");
+                .getIfConditionBegin(EIGHT_SPACE_INDENTATION, name + "() != " +
+                        "null  || isSelectAllSchemaChild");
 
         method += TWELVE_SPACE_INDENTATION +
                 IS_ANY_SELECT_OR_CONTAINMENT_NODE_FLAG + SPACE + EQUAL + SPACE +
@@ -684,11 +684,28 @@ public final class SubtreeFilteringMethodsGenerator {
                 + EQUAL + SPACE + NULL + CLOSE_PARENTHESIS + SPACE +
                 OPEN_CURLY_BRACKET + NEW_LINE;
 
-        method += SIXTEEN_SPACE_INDENTATION + type + SPACE + "result = " +
+        method += SIXTEEN_SPACE_INDENTATION + type + SPACE + "result" +
+                SEMI_COLON + NEW_LINE;
+
+        method += StringGenerator
+                .getIfConditionBegin(SIXTEEN_SPACE_INDENTATION,
+                                     "isSelectAllSchemaChild");
+
+        method += TWENTY_SPACE_INDENTATION + "result" + SPACE + EQUAL + SPACE +
+                APP_INSTANCE + PERIOD + name + OPEN_PARENTHESIS +
+                CLOSE_PARENTHESIS + SEMI_COLON + NEW_LINE;
+
+        method += SIXTEEN_SPACE_INDENTATION + CLOSE_CURLY_BRACKET + SPACE +
+                ELSE + SPACE +
+                OPEN_CURLY_BRACKET + NEW_LINE;
+
+        method += TWENTY_SPACE_INDENTATION + "result = " +
                 name + PERIOD + PROCESS_SUBTREE_FILTERING + OPEN_PARENTHESIS +
                 APP_INSTANCE + PERIOD + name + OPEN_CLOSE_BRACKET_STRING
                 + COMMA + SPACE + FALSE + CLOSE_PARENTHESIS + SEMI_COLON +
                 NEW_LINE;
+
+        method += SIXTEEN_SPACE_INDENTATION + CLOSE_CURLY_BRACKET + NEW_LINE;
 
         method += SIXTEEN_SPACE_INDENTATION + "if (result != null) {" +
                 NEW_LINE;

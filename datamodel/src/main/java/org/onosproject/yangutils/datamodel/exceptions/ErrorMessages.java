@@ -45,8 +45,6 @@ public final class ErrorMessages {
             "Identifier collision detected in";
     public static final String FAILED_TO_ADD_CASE = "Failed to add child " +
             "nodes to case node of augment ";
-    public static final String ERROR_FOR_DECIMAL64 ="YANG file error : " +
-            "decimal64 validation failed. ";
 
     /**
      * Returns error message for datamodel exception for collision detection.
