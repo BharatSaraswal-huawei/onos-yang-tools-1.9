@@ -793,15 +793,14 @@ public final class MethodsGenerator {
      * @param attr     attribute info
      * @param fromAttr attribute info for the from string wrapper
      *                 type
-     * @param name     class name
      * @return from string method's body string
      */
     public static String getFromStringMethod(JavaAttributeInfo attr,
-                                             JavaAttributeInfo fromAttr, String name) {
+                                             JavaAttributeInfo fromAttr) {
 
         return EIGHT_SPACE_INDENTATION + getTrySubString() +
                 getNewLineAndSpace(TWELVE_SPACE_INDENTATION) +
-                getParsedSubString(attr, fromAttr, name) +
+                getParsedSubString(attr, fromAttr) +
                 getReturnOfSubString() + EIGHT_SPACE_INDENTATION +
                 getCatchSubString() +
                 getNewLineAndSpace(EIGHT_SPACE_INDENTATION) +
@@ -812,11 +811,10 @@ public final class MethodsGenerator {
      * Returns sub string with parsed statement for union's from string method.
      *
      * @param attr attribute info
-     * @param name class name
      * @return sub string with parsed statement for union's from string method
      */
     private static String getParsedSubString(JavaAttributeInfo attr,
-                                             JavaAttributeInfo fromStringAttr, String name) {
+                                             JavaAttributeInfo fromStringAttr) {
 
         String targetDataType = getReturnType(attr);
         YangDataTypes types = fromStringAttr.getAttributeType()
@@ -825,7 +823,7 @@ public final class MethodsGenerator {
         switch (types) {
             case BITS:
                 return targetDataType + SPACE + TMP_VAL + SPACE + EQUAL +
-                        SPACE + getCapitalCase(name) + getCapitalCase(attr.getAttributeName()) +
+                        SPACE + getCapitalCase(attr.getAttributeName()) +
                         PERIOD + FROM_STRING_METHOD_NAME +
                         brackets(OPEN_CLOSE_BRACKET_WITH_VALUE,
                                  FROM_STRING_PARAM_NAME, null) + signatureClose();
@@ -1683,17 +1681,15 @@ public final class MethodsGenerator {
     /**
      * Returns to string method for typedef.
      *
-     * @param attr      attribute name
-     * @param className class name
+     * @param attr attribute name
      * @return to string method for typedef
      */
-    static String getToStringForType(String attr, YangType type,
-                                     String className) {
+    static String getToStringForType(String attr, YangType type) {
         StringBuilder builder = new StringBuilder(getOverRideString())
                 .append(methodSignature(TO_STRING_METHOD, null, PUBLIC, null,
                                         STRING_DATA_TYPE, null, CLASS_TYPE));
         builder.append(getReturnString(
-                getToStringForSpecialType(className, type, attr), EIGHT_SPACE_INDENTATION))
+                getToStringForSpecialType(type, attr), EIGHT_SPACE_INDENTATION))
                 .append(signatureClose()).append(methodClose(FOUR_SPACE));
         return builder.toString();
     }
@@ -1701,12 +1697,10 @@ public final class MethodsGenerator {
     /**
      * Returns to string method body for type class.
      *
-     * @param className class name
-     * @param type      type of attribute
-     * @param name      @return to string method body for typedef class
+     * @param type type of attribute
+     * @param name @return to string method body for typedef class
      */
-    private static String getToStringForSpecialType(String className, YangType type,
-                                                    String name) {
+    private static String getToStringForSpecialType(YangType type, String name) {
         switch (type.getDataType()) {
             case INT8:
             case INT16:
@@ -1722,7 +1716,7 @@ public final class MethodsGenerator {
                 return getToStringCall(getToStringForBinary(name));
 
             case BITS:
-                return className + getCapitalCase(name) + PERIOD +
+                return getCapitalCase(name) + PERIOD +
                         TO_STRING_METHOD + brackets(
                         OPEN_CLOSE_BRACKET_WITH_VALUE, name, null);
 
@@ -1736,7 +1730,7 @@ public final class MethodsGenerator {
                 YangType<?> rt = lri.isInGrouping() ? null : lri
                         .getEffectiveDataType();
                 return rt == null ? getToStringCall(name) :
-                        getToStringForSpecialType(className, rt, name);
+                        getToStringForSpecialType(rt, name);
 
             case ENUMERATION:
             case INSTANCE_IDENTIFIER:
@@ -1756,10 +1750,9 @@ public final class MethodsGenerator {
      * Returns union class's to string method.
      *
      * @param types list of types
-     * @param name  class name
      * @return union class's to string method
      */
-    static String getUnionToStringMethod(List<YangType<?>> types, String name) {
+    static String getUnionToStringMethod(List<YangType<?>> types) {
 
         StringBuilder builder = new StringBuilder(getOverRideString());
         builder.append(methodSignature(TO_STRING_METHOD, null, PUBLIC, null,
@@ -1768,7 +1761,7 @@ public final class MethodsGenerator {
             builder.append(getIfConditionBegin(
                     EIGHT_SPACE_INDENTATION, getSetValueParaCondition(
                             types.indexOf(type)))).append(getReturnString(
-                    getToStringForSpecialType(name, type,
+                    getToStringForSpecialType(type,
                                               getCamelCase(type.getDataTypeName(), null)),
                     TWELVE_SPACE_INDENTATION))
                     .append(signatureClose()).append(methodClose(EIGHT_SPACE));

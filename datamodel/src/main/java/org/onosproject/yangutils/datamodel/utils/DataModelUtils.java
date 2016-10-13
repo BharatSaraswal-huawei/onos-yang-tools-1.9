@@ -394,7 +394,7 @@ public final class DataModelUtils {
      * @param listObj list object
      * @return true if list object is non-null and non-empty; false otherwise
      */
-    private static boolean isListPresent(List listObj) {
+    public static boolean isListPresent(List listObj) {
         return listObj != null && !listObj.isEmpty();
     }
 
@@ -653,7 +653,7 @@ public final class DataModelUtils {
             Iterator<YangAtomicPath> atomicPathIterator = atomicPathList.listIterator();
             while (atomicPathIterator.hasNext()) {
                 YangAtomicPath atomicPath = atomicPathIterator.next();
-                Map<String, String> prefixesAndItsImportNameNode = leafrefForCloning.getPrefixAndItsImportedModule();
+                Map<String, String> prefixesAndItsImportNameNode = leafrefForCloning.getPrefixWithNode();
                 String prefixInPath = atomicPath.getNodeIdentifier().getPrefix();
                 String importedNodeName = prefixesAndItsImportNameNode.get(prefixInPath);
                 assignCurrentLeafedWithNewPrefixes(importedNodeName, atomicPath, yangUses);

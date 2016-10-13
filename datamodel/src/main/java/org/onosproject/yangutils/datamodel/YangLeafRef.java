@@ -113,7 +113,7 @@ public class YangLeafRef<T> extends DefaultLocationInfo
     /**
      * Prefix in the nodes of the leafref path and its imported node name.
      */
-    private Map<String, String> prefixAndItsImportedModule;
+    private Map<String, String> prefixAndNode;
 
     /**
      * Flag to indicate whether the leaf ref is inside grouping.
@@ -125,8 +125,8 @@ public class YangLeafRef<T> extends DefaultLocationInfo
      *
      * @return the list of leafref prefix and imported node name
      */
-    public Map<String, String> getPrefixAndItsImportedModule() {
-        return prefixAndItsImportedModule;
+    public Map<String, String> getPrefixWithNode() {
+        return prefixAndNode;
     }
 
     /**
@@ -134,8 +134,8 @@ public class YangLeafRef<T> extends DefaultLocationInfo
      *
      * @param prefixAndItsImportedModule the list of leafref prefix and imported node name
      */
-    public void setPrefixAndItsImportedModule(Map<String, String> prefixAndItsImportedModule) {
-        this.prefixAndItsImportedModule = prefixAndItsImportedModule;
+    public void setPrefixWithNode(Map<String, String> prefixAndItsImportedModule) {
+        this.prefixAndNode = prefixAndItsImportedModule;
     }
 
     /**
@@ -166,7 +166,7 @@ public class YangLeafRef<T> extends DefaultLocationInfo
      */
     public YangLeafRef() {
         yangAppErrorInfo = new YangAppErrorInfo();
-        prefixAndItsImportedModule = new HashMap<>();
+        prefixAndNode = new HashMap<>();
         atomicPath = new ArrayList<>();
         ifFeatureList = new ArrayList<>();
         yangAppErrorInfo.setErrorTag(DATA_MISSING_ERROR_TAG);

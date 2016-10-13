@@ -18,13 +18,19 @@ package org.onosproject.yangutils.translator.tojava.utils;
 
 import org.onosproject.yangutils.datamodel.YangAtomicPath;
 import org.onosproject.yangutils.datamodel.YangAugment;
+import org.onosproject.yangutils.datamodel.YangBit;
+import org.onosproject.yangutils.datamodel.YangBits;
+import org.onosproject.yangutils.datamodel.YangEnum;
+import org.onosproject.yangutils.datamodel.YangEnumeration;
 import org.onosproject.yangutils.datamodel.YangLeafRef;
 import org.onosproject.yangutils.datamodel.YangNode;
 import org.onosproject.yangutils.datamodel.YangNodeIdentifier;
 import org.onosproject.yangutils.datamodel.YangNotification;
 import org.onosproject.yangutils.datamodel.YangType;
+import org.onosproject.yangutils.datamodel.exceptions.DataModelException;
 import org.onosproject.yangutils.datamodel.utils.builtindatatype.YangDataTypes;
 import org.onosproject.yangutils.translator.exception.TranslatorException;
+import org.onosproject.yangutils.translator.tojava.JavaAttributeInfo;
 import org.onosproject.yangutils.translator.tojava.JavaCodeGeneratorInfo;
 import org.onosproject.yangutils.translator.tojava.JavaFileInfoContainer;
 import org.onosproject.yangutils.translator.tojava.JavaFileInfoTranslator;
@@ -37,6 +43,7 @@ import org.onosproject.yangutils.translator.tojava.TempJavaEventFragmentFiles;
 import org.onosproject.yangutils.translator.tojava.TempJavaFragmentFiles;
 import org.onosproject.yangutils.translator.tojava.TempJavaServiceFragmentFiles;
 import org.onosproject.yangutils.translator.tojava.TempJavaTypeFragmentFiles;
+import org.onosproject.yangutils.translator.tojava.javamodel.YangJavaEnumerationTranslator;
 import org.onosproject.yangutils.utils.io.YangPluginConfig;
 import org.onosproject.yangutils.utils.io.impl.CopyrightHeader;
 import org.onosproject.yangutils.utils.io.impl.JavaDocGen.JavaDocType;
@@ -45,6 +52,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.onosproject.yangutils.translator.tojava.GeneratedJavaFileType.BUILDER_CLASS_MASK;
 import static org.onosproject.yangutils.translator.tojava.GeneratedJavaFileType.BUILDER_INTERFACE_MASK;
@@ -828,5 +836,90 @@ public final class JavaFileGeneratorUtils {
             }
         }
         return attributeType;
+    }
+
+    /**
+     * Returns bits type enum file.
+     *
+     * @param attr     attribute
+     * @param type     data type
+     * @param fileInfo file info
+     * @param tempFile temp java fragment files
+     * @throws IOException when fails to do IO operations
+     */
+    public static void generateBitsFile(
+            JavaAttributeInfo attr, YangType type,
+            JavaFileInfoTranslator fileInfo, TempJavaFragmentFiles tempFile) throws IOException {
+        String className = attr.getAttributeName();
+        JavaFileInfoTranslator attrInfo = new JavaFileInfoTranslator();
+        attrInfo.setJavaName(className);
+        attrInfo.setPackage((fileInfo.getPackage() + "." + fileInfo.getJavaName()
+                            ).toLowerCase());
+        attrInfo.setBaseCodeGenPath(fileInfo.getBaseCodeGenPath());
+        attrInfo.setGeneratedFileTypes(GENERATE_ENUM_CLASS);
+        attrInfo.setPackageFilePath(fileInfo.getPackageFilePath() + File
+                .separator + fileInfo.getJavaName().toLowerCase());
+        attrInfo.setPluginConfig(fileInfo.getPluginConfig());
+        TempJavaCodeFragmentFiles codeFile = new TempJavaCodeFragmentFiles(attrInfo);
+        YangJavaEnumerationTranslator enumeration = new YangJavaEnumerationTranslator() {
+            @Override
+            public String getJavaPackage() {
+                return attr.getImportInfo().getPkgInfo();
+            }
+
+            @Override
+            public String getJavaClassNameOrBuiltInType() {
+                return className;
+            }
+
+            @Override
+            public String getJavaAttributeName() {
+                return className;
+            }
+        };
+
+        enumeration.setName(getCapitalCase(className));
+        enumeration.setJavaFileInfo(attrInfo);
+        enumeration.setTempJavaCodeFragmentFiles(codeFile);
+        YangBits yangBits = (YangBits) type.getDataTypeExtendedInfo();
+        Integer key;
+        YangBit bit;
+        String bitName;
+        for (Map.Entry<Integer, YangBit> entry : yangBits.getBitPositionMap()
+                .entrySet()) {
+            key = entry.getKey();
+            bit = entry.getValue();
+            if (bit != null) {
+                bitName = bit.getBitName();
+                createAndAddEnum(bitName, key, enumeration);
+            }
+        }
+
+        codeFile.getEnumTempFiles()
+                .addEnumAttributeToTempFiles(enumeration, fileInfo.getPluginConfig());
+        codeFile.getEnumTempFiles().setEnumClass(false);
+        codeFile.generateJavaFile(GENERATE_ENUM_CLASS, enumeration);
+
+        //Add to import list.
+        JavaQualifiedTypeInfoTranslator info = new
+                JavaQualifiedTypeInfoTranslator();
+        info.setClassInfo(getCapitalCase(attrInfo.getJavaName()));
+        info.setPkgInfo(attrInfo.getPackage());
+        if (tempFile instanceof TempJavaTypeFragmentFiles) {
+            tempFile.getJavaImportData().addImportInfo(info, fileInfo
+                    .getJavaName(), fileInfo.getPackage());
+        }
+    }
+
+    private static void createAndAddEnum(String name, int value,
+                                         YangEnumeration enumeration) {
+        YangEnum yangEnum = new YangEnum();
+        yangEnum.setNamedValue(name);
+        yangEnum.setValue(value);
+        try {
+            enumeration.addEnumInfo(yangEnum);
+        } catch (DataModelException e) {
+            e.printStackTrace();
+        }
     }
 }

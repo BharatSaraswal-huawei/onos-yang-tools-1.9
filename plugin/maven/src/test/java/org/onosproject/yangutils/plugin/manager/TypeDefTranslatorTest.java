@@ -96,7 +96,7 @@ public class TypeDefTranslatorTest {
         yangPluginConfig.setCodeGenDir("target/typedefTranslator/");
         utilManager.translateToJava(yangPluginConfig);
 
-        //deleteDirectory("target/typedefTranslator/");
+        deleteDirectory("target/typedefTranslator/");
 
     }
 
