@@ -16,7 +16,7 @@
 package org.onosproject.yangutils.datamodel;
 
 /**
- * Represents non data nodes which will not have operation type for them.
+ * Represents non data nodes which will not have YMS operation api's for them.
  */
 public interface InvalidOpTypeHolder {
 }

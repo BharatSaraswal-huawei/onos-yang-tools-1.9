@@ -28,6 +28,8 @@ public final class ErrorMessages {
     private static final String AS = "as ";
     public static final String QUOTES = "\"";
     public static final String CASE = " case ";
+    public static final String NOTIFICATION = " notificaiton ";
+    public static final String RPC = " rpc ";
     public static final String INPUT = " input ";
     public static final String OUTPUT = " output ";
     public static final String CHOICE = " choice ";
@@ -43,6 +45,8 @@ public final class ErrorMessages {
             "Identifier collision detected in";
     public static final String FAILED_TO_ADD_CASE = "Failed to add child " +
             "nodes to case node of augment ";
+    public static final String ERROR_FOR_DECIMAL64 ="YANG file error : " +
+            "decimal64 validation failed. ";
 
     /**
      * Returns error message for datamodel exception for collision detection.
